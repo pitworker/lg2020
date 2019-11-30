@@ -4,7 +4,8 @@
 #include <Adafruit_Sensor.h>
 #include <Adafruit_NeoPixel.h>
 
-#define LED_PIN   6
+#define LED_PIN   7
+#define LED2_PIN  6
 #define LED_COUNT 6
 
 #define DELAY_TIME 50
@@ -13,7 +14,8 @@
 Adafruit_LSM9DS1 lsm = Adafruit_LSM9DS1();
 
 // LED strip
-Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_RGBW + NEO_KHZ800);
+Adafruit_NeoPixel strip2(LED_COUNT, LED2_PIN, NEO_GRB + NEO_KHZ800);
 
 float velocityX, 
       velocityY,
@@ -41,6 +43,10 @@ void setupStrip() {
   strip.begin();
   strip.show();
   strip.setBrightness(50); // Sets the brightness to ~1/5 of max
+
+  strip2.begin();
+  strip2.show();
+  strip2.setBrightness(50);
 }
 
 float velocity(float prevV, float a) {
@@ -58,7 +64,7 @@ float velocity(float prevV, float a) {
 void setup() {
   Serial.begin(115200);
 
-  setupSensor();
+  //setupSensor();
   setupStrip();
 
   velocityX = 0;
@@ -69,16 +75,16 @@ void setup() {
 }
 
 void loop() {
-  sensors_event_t a;
+  /*sensors_event_t a;
   sensors_event_t m;
   sensors_event_t g;
-  sensors_event_t temp;
+  sensors_event_t temp;*/
   
   int accelCombined; 
 
   int rColor;
 
-  lsm.read();
+  /*lsm.read();
   lsm.getEvent(&a, &m, &g, &temp);
 
   //update velocity values
@@ -91,11 +97,14 @@ void loop() {
   Serial.print("\tY: "); Serial.print(g.gyro.y);     Serial.print(" dps ");
   Serial.print("\tZ: "); Serial.print(g.gyro.z);     Serial.println(" dps ");
   
-  rColor = map(int(max(20.0, min(512.0, abs(g.gyro.x)))), 20, 512, 0, 255);
+  rColor = map(int(max(0.4, min(5.0, abs(m.magnetic.x))) * 51.0), 20, 255, 0, 255);*/
   
   for(int i = 0; i < strip.numPixels(); i++) {
-    strip.setPixelColor(i, strip.Color(rColor, rColor, rColor));
+    strip.setPixelColor(i, strip.Color(0,255,0,0));/*strip.Color(rColor, rColor
+    , 0));*/
+    strip2.setPixelColor(i, strip.Color(0,255,0));
   }
   strip.show();
+  strip2.show();
   delay(DELAY_TIME);
 }
