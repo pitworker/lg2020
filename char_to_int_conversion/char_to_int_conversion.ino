@@ -1,9 +1,7 @@
 
 //makes the character array of length 3
 char* make_char_array(int red, int green, int blue){
-  char r = (unsigned char)red;
-  int rr = (int)r;
-  char* val = malloc(sizeof(char) * 3);
+  char* val = (char*)malloc(sizeof(char) * 3);
 
   //we have to place it in the range [-128, 127]
   val[0] = (red - 128); 
