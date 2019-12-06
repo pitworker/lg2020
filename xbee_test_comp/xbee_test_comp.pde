@@ -16,7 +16,7 @@ void setup() {
   size(300, 300);
   println((Object[])Serial.list()); // print list of available serial ports
   // you might need to change the Serial.list()[VALUE]
-  xbee = new Serial(this, Serial.list()[2], 9600);
+  xbee = new Serial(this, Serial.list()[3], 9600);
   
   r = 255;
   g = 255;
@@ -39,11 +39,12 @@ void draw() {
     }
   }
  
-  c = 0xFF000000 | (r << 16) | (g << 8) | (b);
+  c = 0x00000000 | (r << 16) | (g << 8) | (b);
   
-  String data = "<" + c + ">";
+  String data = "<" + c + c + c">";
   
   xbee.write(data);
+  
   println(hex(c));
   /*potVal = xbee.readStringUntil(10); // read incoming data until line feed
   if (potVal != null) {

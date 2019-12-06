@@ -16,7 +16,7 @@ SoftwareSerial xBee(8, 9); // RX, TX out (8,9)
 
 Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);
 
-int color;
+char* color;
 int currentIndex;
 
 char receivedChars[NUM_CHARS];
@@ -95,7 +95,7 @@ void loop() {
     
     //Serial.print(receivedStr);
     //Serial.print(", ");
-    Serial.println(color, HEX);
+    Serial.println(color[0]);
     newData = false;  
   }
 }

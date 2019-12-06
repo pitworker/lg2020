@@ -16,7 +16,7 @@ SoftwareSerial xBee(8, 9); // RX, TX out (8,9)
 
 Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);
 
-int color;
+long int color;
 int currentIndex;
 
 char receivedChars[NUM_CHARS];
@@ -49,23 +49,6 @@ void setupXBee() {
   Serial.println("xBee Started.");
 }
 
-
-//gets red val
-int get_red(char* arr){
-  char a = arr[0];
-  return (int)a + 128; //convert from [-128, 127] -> [0, 255]
-}
-
-//gets green val
-int get_green(char* arr){
-  return (int)arr[1] + 128; //convert from [-128, 127] -> [0, 255]
-}
-
-//gets blue val
-int get_blue(char* arr){
-  return (int)arr[2] + 128; //convert from [-128, 127] -> [0, 255]
-}
-
 void setup() {
   setupStrip();
   setupXBee();
@@ -81,36 +64,37 @@ void setup() {
 void loop() {
   recvWithStartEndMarkers();
   if (newData) {
-    //char* receivedStr[5]; String(receivedChars);
-    char* newColor = receivedChars;
+    String receivedStr = String(receivedChars);
+    long int newColor = receivedStr.toInt();
 
     if(newColor != color) {
       color = newColor;
       for(int i = 0; i < strip.numPixels(); i++) {
-        strip.setPixelColor(i, strip.Color(get_green(color),get_red(color),
-                                           get_blue(color)));
+        strip.setPixelColor(i, strip.Color(getG(color),getR(color),
+                                           getB(color)));
       }
       strip.show();
     }
     
-    //Serial.print(receivedStr);
-    //Serial.print(", ");
-    Serial.println(color, HEX);
+    /*Serial.print(receivedStr);
+    Serial.print(", ");
+    Serial.println(color, HEX);*/
     newData = false;  
   }
 }
 
-//byte getR(int c) {
-//  return (byte) ((c >> 16) & 0x000000FF);
-//}
-//
-//byte getG(int c) {
-//  return (byte) ((c >> 8) & 0x000000FF);
-//}
-//
-//byte getB(int c) {
-//  return (byte) (c & 0x000000FF);
-//}
+byte getR(int c) {
+  Serial.println((byte) ((c >> 16) & 0x000000FF), HEX);
+  return (byte) ((c >> 16) & 0x000000FF);
+}
+
+byte getG(int c) {
+  return (byte) ((c >> 8) & 0x000000FF);
+}
+
+byte getB(int c) {
+  return (byte) (c & 0x000000FF);
+}
 
 void recvWithStartEndMarkers() { 
   //https://forum.arduino.cc/index.php?topic=396450.0
