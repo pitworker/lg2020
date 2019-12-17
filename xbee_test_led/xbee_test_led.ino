@@ -10,7 +10,7 @@
 
 #define DELAY_TIME 50
 
-#define NUM_CHARS 32
+#define NUM_CHARS 8
 
 SoftwareSerial xBee(8, 9); // RX, TX out (8,9)
 
@@ -67,33 +67,56 @@ void loop() {
     String receivedStr = String(receivedChars);
     long int newColor = receivedStr.toInt();
 
+    byte red = getR(color);
+    byte green = getG(color);
+    byte blue = getB(color);
+
     if(newColor != color) {
       color = newColor;
       for(int i = 0; i < strip.numPixels(); i++) {
-        strip.setPixelColor(i, strip.Color(getG(color),getR(color),
-                                           getB(color)));
+        strip.setPixelColor(i, strip.Color(green,red,blue));
       }
       strip.show();
     }
-    
-    /*Serial.print(receivedStr);
-    Serial.print(", ");
-    Serial.println(color, HEX);*/
+    Serial.print("red: ");
+    Serial.print(red);
+    Serial.print(", green: ");
+    Serial.print(green);
+    Serial.print(", blue: ");
+    Serial.println(blue);
+    Serial.print("received: ");
+    Serial.print(receivedStr);
+    Serial.print(", parsed: ");
+    Serial.println(color, HEX);
     newData = false;  
   }
 }
 
-byte getR(int c) {
-  Serial.println((byte) ((c >> 16) & 0x000000FF), HEX);
-  return (byte) ((c >> 16) & 0x000000FF);
+byte getR(long int c) {
+  //Serial.println((byte) ((c >> 16) & 0x000000FF), HEX);
+
+  long int red = (c >> 16) & 0x000000FF;
+  
+  //Serial.print("red ");
+  //Serial.println(red);
+  return (byte) red;
 }
 
-byte getG(int c) {
-  return (byte) ((c >> 8) & 0x000000FF);
+byte getG(long int c) {
+
+  long int green = (c >> 8) & 0x000000FF;
+
+  //Serial.print("green ");
+  //Serial.println(green);
+  return (byte) green;
 }
 
-byte getB(int c) {
-  return (byte) (c & 0x000000FF);
+byte getB(long int c) {
+  long int blue = c & 0x000000FF;
+
+  //Serial.print("blue ");
+  //Serial.println(blue);
+  return (byte) blue;
 }
 
 void recvWithStartEndMarkers() { 
@@ -106,20 +129,30 @@ void recvWithStartEndMarkers() {
  
     while (xBee.available() > 0 && newData == false) {
         rc = xBee.read();
-
+        bool wasColon = false;
+        Serial.println(rc);
         if (recvInProgress == true) {
-            if (rc != endMarker) {
-                receivedChars[ndx] = rc;
-                ndx++;
-                if (ndx >= NUM_CHARS) {
-                    ndx = NUM_CHARS - 1;
+            if (rc != endMarker && ((rc >= '0' && rc <= '9') || rc == ':')) {
+                if (wasColon && (rc >= '0' && rc <= '9')) {
+                    receivedChars[ndx] = rc;
+                    ndx++;
+                    //Serial.println(rc);
+                    wasColon = false;
+                } else if (rc == ':') {
+                    wasColon = true;
                 }
             }
-            else {
+            else if (rc == endMarker) {
+                //Serial.println(ndx);
                 receivedChars[ndx] = '\0'; // terminate the string
                 recvInProgress = false;
                 ndx = 0;
                 newData = true;
+            }
+            else {
+                recvInProgress = false;
+                ndx = 0;
+                newData = false;
             }
         }
 

@@ -41,11 +41,19 @@ void draw() {
  
   c = 0x00000000 | (r << 16) | (g << 8) | (b);
   
-  String data = "<" + c + c + c">";
+  String cString = "" + c;
+  
+  String cString2 = "";
+  
+  for (int i = 0; i < cString.length(); i++) {
+     cString2 = cString2 + cString.charAt(i) + ":";
+  }
+  
+  String data = "<:" + cString2 + ">";
   
   xbee.write(data);
   
-  println(hex(c));
+  println(data);
   /*potVal = xbee.readStringUntil(10); // read incoming data until line feed
   if (potVal != null) {
     println("Incoming data: " + potVal);
