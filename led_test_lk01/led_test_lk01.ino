@@ -31,7 +31,7 @@ void setup() {
   head.setBrightness(50);
 
   for(int i = 0; i < head.numPixels(); i++) {
-    head.setPixelColor(i, head.Color(255, 255, 0));
+    head.setPixelColor(i, head.Color(255, 255, 255));
   }
   head.show();
 

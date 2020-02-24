@@ -13,6 +13,7 @@ int b;
 int c;
  
 void setup() {
+  frameRate(15);
   size(300, 300);
   println((Object[])Serial.list()); // print list of available serial ports
   // you might need to change the Serial.list()[VALUE]
