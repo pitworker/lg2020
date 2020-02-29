@@ -2,9 +2,9 @@
 #include <SoftwareSerial.h>
 #include <Adafruit_NeoPixel.h>
 
-#define LED_PIN    7
-#define XBEE_IN    8
-#define XBEE_OUT   9
+#define LED_PIN    4
+#define XBEE_IN    9
+#define XBEE_OUT   8
 
 #define LED_COUNT  6
 
