@@ -1,7 +1,5 @@
 #include <Wire.h>
 #include <SPI.h>
-#include <Adafruit_LSM9DS1.h>
-#include <Adafruit_Sensor.h>
 #include <Adafruit_NeoPixel.h>
 
 #define NECK_PIN     2
@@ -12,7 +10,7 @@
 
 #define NECK_COUNT   5
 #define MID_COUNT    5
-#define BOTTOM_COUNT 6
+#define BOTTOM_COUNT 10
 #define FRONT_COUNT  7
 #define BACK_COUNT   7
 
@@ -44,15 +42,18 @@ void setup() {
   back.setBrightness(50);
 
   for(int i = 0; i < bottom.numPixels(); i++) {
-    neck.setPixelColor(i, neck.Color(255, 255, 0));
-    mid.setPixelColor(i, mid.Color(255, 255, 0));
-    bottom.setPixelColor(i, bottom.Color(255, 255, 0));
+    neck.setPixelColor(i, neck.Color(255, 0, 255));
+    mid.setPixelColor(i, mid.Color(255, 0, 255));
+    
   }
+  for(int i = 0; i < 16; i++) {
+    bottom.setPixelColor(i, bottom.Color( 50, 255, 255));
+    }
 
 
   for(int i = 0; i < front.numPixels(); i++) {
-    front.setPixelColor(i, front.Color(255, 0, 0));
-    back.setPixelColor(i, back.Color(255, 0, 0));
+    front.setPixelColor(i, front.Color(255, 0, 80));
+    back.setPixelColor(i, back.Color(255, 0, 80));
   }
   
   neck.show();
